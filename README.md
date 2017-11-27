@@ -1,6 +1,9 @@
 # node-c-jit
 node.JS run C language Just In Time
 
+
+# install
+-------------------
 ```sh
 npm install c-jit
 ```
