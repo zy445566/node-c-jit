@@ -20,8 +20,8 @@ sync:
 ```node
 const CJit = require("c-jit");
 const path = require("path");
-
 let cJit  = new CJit();
+
 // run by c code sync
 let funcByrunSync = cJit.runSync(' \
   if (info.Length() < 2) { \
@@ -49,6 +49,10 @@ console.log("This should be twelve(by file sync):"+funcByfileSync(6,6));
 
 async:
 ```node
+const CJit = require("c-jit");
+const path = require("path");
+let cJit  = new CJit();
+
 //run by c code
 let funcByrun = cJit.run(' \
   if (info.Length() < 2) { \
