@@ -1,0 +1,29 @@
+{
+  "name": "c-jit",
+  "version": "1.0.0",
+  "description": "node.JS run C language Just In Time",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zy445566/node-c-jit.git"
+  },
+  "keywords": [
+    "jit",
+    "node",
+    "js",
+    "c"
+  ],
+  "author": "zy445566",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/zy445566/node-c-jit/issues"
+  },
+  "homepage": "https://github.com/zy445566/node-c-jit#readme",
+  "dependencies": {
+    "ejs": "^2.5.7",
+    "nan": "^2.8.0"
+  }
+}

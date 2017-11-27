@@ -1,24 +1,4 @@
-# node-c-jit
-node.JS run C language Just In Time
-
-```sh
-npm install c-jit
-```
-
-# prepare
--------------------
-```
-npm install node-gyp -g
-```
-You can see:https://github.com/nodejs/node-gyp#installation
-
-# example
--------------------
-Grammar reference:https://github.com/nodejs/node-addon-examples <br />
-
-sync:
-```node
-const CJit = require("c-jit");
+const CJit = require("./index");
 const path = require("path");
 
 let cJit  = new CJit();
@@ -45,10 +25,7 @@ console.log("This should be eight(by run sync):"+funcByrunSync(3,5));
 //run by file sync
 let funcByfileSync = cJit.runByFileSync(path.join(__dirname,'test.cc'));
 console.log("This should be twelve(by file sync):"+funcByfileSync(6,6));
-```
 
-async:
-```node
 //run by c code
 let funcByrun = cJit.run(' \
   if (info.Length() < 2) { \
@@ -78,5 +55,8 @@ let funcByfile = cJit.runByFile(path.join(__dirname,'test.cc'),(err,func)=>{
   console.log("This should be twelve(by file):"+func(6,6));
 });
 
-```
+
+
+
+
 
