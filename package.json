@@ -1,6 +1,6 @@
 {
   "name": "c-jit",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "node.JS run C language Just In Time",
   "main": "index.js",
   "scripts": {
