@@ -91,29 +91,29 @@ class CJit
         });
     }
 
-    configureSync(codePath)
+    configureSync(codeMd5,codePath)
     {
-        if (fs.existsSync(path.join(codePath,"build"))){return false;}
+        if (fs.existsSync(path.join(codePath,"build/Makefile"))){return false;}
         return this.execGypSync(codePath,"configure");
     }
 
-    buildSync(codePath)
+    buildSync(codeMd5,codePath)
     {
-        if (fs.existsSync(path.join(codePath,"build/Release"))){return false;}
+        if (fs.existsSync(path.join(codePath,`build/Release/${codeMd5}.node`))){return false;}
         return this.execGypSync(codePath,"build");
     }
 
-    configure(codePath,func)
+    configure(codeMd5,codePath,func)
     {
-        fs.exists(path.join(codePath,"build"),(exists)=>{
+        fs.exists(path.join(codePath,"build/Makefile"),(exists)=>{
             if (exists){func(null,false);return;}
             this.execGyp(codePath,"configure",func);
         });
     }
 
-    build(codePath,func)
+    build(codeMd5,codePath,func)
     {
-        fs.exists(path.join(codePath,"build/Release"),(exists)=>{
+        fs.exists(path.join(codePath,`build/Release/${codeMd5}.node`),(exists)=>{
             if (exists){func(null,false);return;}
             this.execGyp(codePath,"build",func);
         });
@@ -124,8 +124,8 @@ class CJit
         let codeMd5 = "codeMd5"+this.md5(code);
         let codePath = path.join(this.srcPath,codeMd5);
         this.copyTemplateSync(codeMd5,codePath,code);
-        this.configureSync(codePath);
-        this.buildSync(codePath);
+        this.configureSync(codeMd5,codePath);
+        this.buildSync(codeMd5,codePath);
         return require(path.join(codePath,`build/Release/${codeMd5}`))[codeMd5];
     }
 
@@ -141,9 +141,9 @@ class CJit
         let codePath = path.join(this.srcPath,codeMd5);
         this.copyTemplate(codeMd5,codePath,code,(err)=>{
             if (err){func(err); return;}
-            this.configure(codePath,(err, stdout, stderr)=>{
+            this.configure(codeMd5,codePath,(err, stdout, stderr)=>{
                 if (err){func(err); return;}
-                this.build(codePath,(err, stdout, stderr)=>{
+                this.build(codeMd5,codePath,(err, stdout, stderr)=>{
                     if (err){func(err); return;}
                     func(null,require(path.join(codePath,`build/Release/${codeMd5}`))[codeMd5]);
                 });
