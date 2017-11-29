@@ -2,6 +2,7 @@ const CJit = require("./index");
 const path = require("path");
 
 let cJit  = new CJit();
+
 // run by c code sync
 let funcByrunSync = cJit.runSync(`
   if (info.Length() < 2) {
@@ -21,6 +22,7 @@ let funcByrunSync = cJit.runSync(`
   info.GetReturnValue().Set(num);
 `);
 console.log("This should be eight(by run sync):"+funcByrunSync(3,5));
+
 
 //run by file sync
 let funcByfileSync = cJit.runByFileSync(path.join(__dirname,'test.cc'));
