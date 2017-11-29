@@ -4,13 +4,14 @@ const child_process = require('child_process');
 const fs = require('fs');
 const path = require('path');
 const ejs = require('ejs');
+const Tools = require('./lib/Tools');
 
 class CJit
 {
     constructor(gypBinPath = "",srcPath="")
     {
         this.gypBinPath = gypBinPath===""?"node-gyp":gypBinPath;
-        this.srcPath = srcPath===""?__dirname:srcPath;
+        this.srcPath = srcPath===""?path.join(__dirname,"srcPath"):srcPath;
         this.templatePath = path.join(__dirname,'template');
     }
 
@@ -119,26 +120,59 @@ class CJit
         });
     }
 
-    runSync (code)
+    getCodeMd5(code)
     {
-        let codeMd5 = "codeMd5"+this.md5(code);
-        let codePath = path.join(this.srcPath,codeMd5);
+        return "codeMd5"+this.md5(code);
+    }
+
+    getCodePath(codeMd5)
+    {
+        return path.join(this.srcPath,codeMd5);
+    }
+
+    getCodeByFileSync(filePath)
+    {
+        return fs.readFileSync(filePath).toString();
+    }
+    
+
+    getReleaseSync(codeMd5,codePath,code)
+    {
         this.copyTemplateSync(codeMd5,codePath,code);
         this.configureSync(codeMd5,codePath);
         this.buildSync(codeMd5,codePath);
         return require(path.join(codePath,`build/Release/${codeMd5}`))[codeMd5];
     }
 
+    runSync (code)
+    {
+        let codeMd5 = this.getCodeMd5(code);
+        let codePath = this.getCodePath(codeMd5);
+        return this.getReleaseSync(codeMd5,codePath,code);
+    }
+
     runByFileSync (filePath)
     {
-        let code = fs.readFileSync(filePath).toString();
+        let code = this.getCodeByFileSync(filePath);
         return this.runSync (code)
     }
 
-    run (code,func)
+    getToolsSync (code)
     {
-        let codeMd5 = "codeMd5"+this.md5(code);
-        let codePath = path.join(this.srcPath,codeMd5);
+        let codeMd5 = this.getCodeMd5(code);
+        let codePath = this.getCodePath(codeMd5);
+        let cfunc = this.getReleaseSync(codeMd5,codePath,code);
+        return new Tools(codeMd5,codePath,cfunc);
+    }
+
+    getToolsByFileSync (filePath)
+    {
+        let code = this.getCodeByFileSync(filePath);
+        return this.getToolsSync(code);
+    }
+
+    getRelease(codeMd5,codePath,code,func)
+    {
         this.copyTemplate(codeMd5,codePath,code,(err)=>{
             if (err){func(err); return;}
             this.configure(codeMd5,codePath,(err, stdout, stderr)=>{
@@ -148,16 +182,45 @@ class CJit
                     func(null,require(path.join(codePath,`build/Release/${codeMd5}`))[codeMd5]);
                 });
             });
-            
-
         });
+    }
+
+    run (code,func)
+    {
+        let codeMd5 = this.getCodeMd5(code);
+        let codePath = this.getCodePath(codeMd5);
+        this.getRelease(codeMd5,codePath,code,func);
+    }
+
+    getCodeByFile(filePath,func)
+    {
+        fs.readFile(filePath,func);
     }
 
     runByFile (filePath,func)
     {
-        fs.readFile(filePath,(err,data)=>{
+        this.getCodeByFile(filePath,(err,data)=>{
             if (err){func(err); return;}
             this.run (data,func);
+        });
+    }
+
+    getTools (code,func)
+    {
+        let codeMd5 = this.getCodeMd5(code);
+        let codePath = this.getCodePath(codeMd5);
+        this.getRelease(codeMd5,codePath,code,(err,cfunc)=>{
+            if (err){func(err); return;}
+            func(null,new Tools(codeMd5,codePath,cfunc));
+        })
+        
+    }
+
+    getToolsByFile (filePath,func)
+    {
+        this.getCodeByFile(filePath,(err,data)=>{
+            if (err){func(err); return;}
+            this.getTools(data,func);
         });
     }
 
