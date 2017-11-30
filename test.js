@@ -1,5 +1,6 @@
 const CJit = require("./index");
 const path = require("path");
+const assert = require('assert');
 
 let cJit  = new CJit();
 
@@ -23,9 +24,14 @@ info.GetReturnValue().Set(num);
 
 let filePath = path.join(__dirname,'test.cc');
 
+let value1 = Math.floor(Math.random()*1000);
+let value2 = Math.floor(Math.random()*1000);
+
 // run by c code sync
 let funcByrunSync = cJit.runSync(code);
 console.log("This should be eight(by run sync):"+funcByrunSync(3,5));
+
+assert.equal(funcByrunSync(value1,value2),value1+value2,"funcByrunSync error");
 /**
  * [Function delete]
  * Do not use it unnecessarily. This can lead to recompiling and spending a lot of time
@@ -36,6 +42,7 @@ cJit.getToolsSync(code).delete();
 //run by file sync
 let funcByfileSync = cJit.runByFileSync(filePath);
 console.log("This should be twelve(by file sync):"+funcByfileSync(6,6));
+assert.equal(funcByfileSync(value1,value2),value1+value2,"funcByfileSync error");
 /**
  * [Function delete]
  * Do not use it unnecessarily. This can lead to recompiling and spending a lot of time
@@ -44,9 +51,10 @@ console.log("This should be twelve(by file sync):"+funcByfileSync(6,6));
 cJit.getToolsByFileSync(filePath).delete();
 
 //run by c code
-let funcByrun = cJit.run(code,(err,func)=>{
+cJit.run(code,(err,funcByrun)=>{
   if (err){console.log(err);return;}
-  console.log("This should be eight(by run):"+func(3,5));
+  console.log("This should be eight(by run):"+funcByrun(3,5));
+  assert.equal(funcByrun(value1,value2),value1+value2,"funcByrun error");
   /**
    * [Function delete]
    * Do not use it unnecessarily. This can lead to recompiling and spending a lot of time
@@ -61,9 +69,10 @@ let funcByrun = cJit.run(code,(err,func)=>{
 
 
 // run by file
-let funcByfile = cJit.runByFile(filePath,(err,func)=>{
+cJit.runByFile(filePath,(err,funcByfile)=>{
   if (err){console.log(err);return;}
-  console.log("This should be twelve(by file):"+func(6,6));
+  console.log("This should be twelve(by file):"+funcByfile(6,6));
+  assert.equal(funcByfile(value1,value2),value1+value2,"funcByfile error");
   /**
    * [Function delete]
    * Do not use it unnecessarily. This can lead to recompiling and spending a lot of time

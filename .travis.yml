@@ -1,0 +1,20 @@
+sudo: false
+
+language: node_js
+
+
+node_js:
+  - 6
+  - 8
+  - stable
+
+addons:
+  apt:
+    sources:
+    - ubuntu-toolchain-r-test
+    packages:
+    - python-2.7
+
+script: npm install node-gyp -g;npm test
+
+after_success: npm i codecov && codecov
