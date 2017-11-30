@@ -1,6 +1,6 @@
 "use strict";
-const AsyncCjit = require("./lib/AsyncCjit");
-const SyncCjit = require("./lib/SyncCjit");
+const AsyncCJit = require("./lib/AsyncCJit");
+const SyncCJit = require("./lib/SyncCJit");
 const Tools = require("./lib/Tools");
 const path = require('path');
 
@@ -11,8 +11,8 @@ class CJit
         this.gypBinPath = gypBinPath===""?"node-gyp":gypBinPath;
         this.srcPath = srcPath===""?path.join(__dirname,"srcPath"):srcPath;
         this.templatePath = path.join(__dirname,'template');
-        this.asyncCJit = new AsyncCjit(this.gypBinPath,this.srcPath,this.templatePath);
-        this.syncCJit = new SyncCjit(this.gypBinPath,this.srcPath,this.templatePath);
+        this.asyncCJit = new AsyncCJit(this.gypBinPath,this.srcPath,this.templatePath);
+        this.syncCJit = new SyncCJit(this.gypBinPath,this.srcPath,this.templatePath);
     }
 
     run(code,func)
