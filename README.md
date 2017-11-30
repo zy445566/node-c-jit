@@ -1,5 +1,7 @@
 # node-c-jit
-##  [![Build Status](https://travis-ci.org/zy445566/node-c-jit.svg?branch=master)](https://travis-ci.org/zy445566/node-c-jit) 
+[![Build Status](https://travis-ci.org/zy445566/node-c-jit.svg?branch=master)](https://travis-ci.org/zy445566/node-c-jit) 
+
+<br />
 node.JS run C language Just In Time
 
 
