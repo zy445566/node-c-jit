@@ -15,6 +15,6 @@ addons:
     packages:
     - python2.7
 
-script: npm install node-gyp -g;npm test
+script: npm install node-gyp -g && npm test
 
 after_success: npm i codecov && codecov
